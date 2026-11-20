@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CT Practice ✦</title>
+<style>
+:root{--bg:#f2f7f5;--card:#fff;--ink:#16324f;--mut:#5f7a8f;--acc:#0d9488;--acc-d:#0a6f66;--acc2:#e3f6f3;--sun:#f5a524;--sun2:#fff4d9;--ok:#16a34a;--no:#e5484d;--bd:#d9e6e2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1a1f;--card:#12272e;--ink:#e6f4f1;--mut:#8fb0b5;--acc:#2dd4bf;--acc-d:#14a090;--acc2:#16363a;--sun:#fbbf24;--sun2:#3a2f12;--ok:#4ade80;--no:#ff7b80;--bd:#21424a}}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1000px 400px at 50% -100px,var(--acc2),transparent),var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;min-height:100vh}
+.wrap{max-width:680px;margin:0 auto;padding:18px 16px 70px}
+.hero{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,var(--acc),#2563eb);color:#fff;border-radius:24px;padding:18px 20px;margin-bottom:16px;box-shadow:0 10px 28px rgba(13,148,136,.28)}
+.logo{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:28px;flex:none}
+h1{font-size:26px;margin:0;letter-spacing:-.4px;line-height:1.1}
+.sub{margin:3px 0 0;font-size:13px;opacity:.9}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:6px;scrollbar-width:none}
+.chip{flex:none;border:2px solid var(--bd);border-bottom-width:4px;background:var(--card);color:var(--ink);padding:8px 14px;border-radius:14px;font:600 13px inherit;font-family:inherit;cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--acc)}
+.chip.on{background:var(--acc);color:#fff;border-color:var(--acc-d)}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 4px 0 var(--bd)}
+.tip{background:var(--sun2);border-color:color-mix(in srgb,var(--sun) 45%,transparent);box-shadow:0 4px 0 color-mix(in srgb,var(--sun) 35%,transparent)}
+.tip b{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--sun)}
+.tip ul{margin:8px 0 0;padding-left:20px;font-size:15px}.tip li{margin:3px 0}
+.bar{height:12px;background:var(--bd);border-radius:99px;margin:4px 0 16px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--sun));border-radius:99px;transition:width .4s}
+.q{font-size:19px;font-weight:600;margin:0 0 12px;line-height:1.4}
+.meta{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--acc);margin-bottom:8px}
+.src{background:var(--acc2);border-left:5px solid var(--acc);border-radius:12px;padding:12px 14px;margin-bottom:12px;white-space:pre-wrap;font-size:15px}
+.opt{display:block;width:100%;text-align:left;margin:10px 0;padding:13px 16px;border:2px solid var(--bd);border-bottom-width:4px;background:var(--card);color:var(--ink);border-radius:16px;font:inherit;font-size:15px;cursor:pointer;transition:.12s}
+.opt:hover{border-color:var(--acc);background:var(--acc2)}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--card))}
+.opt.no{border-color:var(--no);background:color-mix(in srgb,var(--no) 16%,var(--card))}
+.exp,.out{margin-top:12px;font-size:14px;color:var(--mut);white-space:pre-wrap}
+.out{color:var(--ink);background:var(--acc2);border-radius:14px;padding:12px 14px}.out:empty{display:none}
+textarea,input{width:100%;padding:12px;margin:6px 0;border-radius:14px;border:2px solid var(--bd);background:var(--bg);color:var(--ink);font:inherit;font-size:15px;outline:none}
+textarea:focus,input:focus{border-color:var(--acc)}
+.btn{background:var(--acc);color:#fff;border:0;border-bottom:4px solid var(--acc-d);border-radius:14px;padding:11px 20px;font:700 14px inherit;font-family:inherit;cursor:pointer;margin:10px 8px 0 0;transition:.1s}
+.btn:active{transform:translateY(2px);border-bottom-width:2px}
+.btn.g{background:var(--card);color:var(--acc);border:2px solid var(--bd);border-bottom-width:4px}
+.big{font-size:56px;text-align:center}.c{text-align:center}
+details{margin-bottom:12px;font-size:13px;color:var(--mut)}summary{cursor:pointer}
+</style></head><body><div class="wrap">
+<div class="hero"><div class="logo">🎓</div><div><h1>CT Practice</h1><p class="sub">Pick a topic · read the tips · drill · let Gemini rate you</p></div></div>
+<details><summary>🔑 Gemini key (built in; paste here to override)</summary><input id="gk" type="password" placeholder="optional: new key (overrides the built-in one)"></details>
+<div class="chips" id="chips"></div><div id="tip"></div><div id="bar"></div><div id="main"></div>
+</div>
+<script>
+const MODEL="gemini-3.8-flash";
+// CHANGE YOUR KEY HERE (or paste a new one in the 🔑 box at the top, which overrides this)
+const KEY="AQ.Ab8RN6KWJ8ytMisl_SOC7jvjeuWnB15SA2-HfYGRZW8WC3PIBw";
+const m=(q,o,c,e)=>({k:"m",q,o,c,e}),a=(k,t,x)=>({k,t,x});
+const TC=["Too broad","Too narrow","Perfect"];
+const T=[
+{n:"Parallelism",tip:["Items in a list must share one grammatical form: -ing with -ing, to+verb with to+verb, adjective with adjective.","Watch words after: and, or, but, not only…but also, either…or.","Fix the odd one out."],it:[
+m("Which sentence is parallel?",["She likes swimming, to hike, and reading.","She likes swimming, hiking, and reading.","She likes to swim, hiking, and read."],1,"All -ing."),
+m("Fix: “He wants to travel, to learn, and making friends.”",["to travel, to learn, and to make friends","traveling, to learn, and make friends","travel, learning, and to make friends"],0,"Keep to+verb."),
+m("Which is parallel?",["The manager is competent, efficient, and kind.","The manager is competent, efficient, and has kindness.","The manager is competent, works efficiently, and kind."],0,"Three adjectives."),
+m("The course taught us how to write clearly and ___.",["to think critical","think critically","thinking critical"],1,"Verb + adverb pattern."),
+m("Which is NOT parallel?",["Not only did he read, but he also wrote.","He enjoys reading and to write.","She is smart and hardworking."],1,"“reading and writing”.")]},
+{n:"Topic sentence",tip:["Topic sentence = main idea of the paragraph (topic + controlling idea), usually first.","It must cover ALL the details.","Too broad = vague. Too narrow = covers only one detail.","In the CT: read the details, find what they share, write one clear sentence."],it:[
+m("Details: improves heart health, boosts mood, helps sleep. Best topic sentence?",["Exercise is good.","I exercise at 6 am on Mondays.","Regular exercise improves both physical and mental health."],2,"Covers all details."),
+m("Details: buses stuck, long jams, honking, late workers. Best?",["Dhaka is a city.","Traffic congestion in Dhaka disrupts daily life.","One bus was late on Sunday."],1,"Right scope."),
+a("topic","Teenagers who stay up late on their phones often wake up tired. They struggle to concentrate in class. Their grades slowly drop, and many skip breakfast."),
+a("topic","Bangladesh has long rivers and rich soil. Its farmers grow rice, jute, and vegetables. Fish from its waters feed millions of people."),
+a("topic","Dhaka’s roads are crowded with buses, rickshaws, and cars. A short trip can take two hours. Workers reach their offices late and tired."),
+a("topic","Reading novels expands a person’s vocabulary. It sharpens the imagination. It also helps readers understand cultures very different from their own."),
+a("topic","Many students now use phones for online classes. Some use apps to learn new languages. Others watch video lectures after school."),
+a("topic","Plastic bags block drains and cause flooding in cities. They pollute rivers and canals. Fish and birds swallow them and die.")]},
+{n:"Identify the type",tip:["Too broad: general, no focus.","Too narrow: tiny fact, nothing to develop.","Perfect: clear topic + controlling idea, room to develop."],it:[
+...[["Water is important.",0,"Vague."],["I drank water at lunch yesterday.",1,"One tiny fact."],["Social media affects teenagers’ sleep, studies, and relationships.",2,"Topic + controlling idea."],["Sports are everywhere.",0,"Nothing specific."],["My phone’s battery is 80%.",1,"Nothing to build on."]].map(([s,c,e])=>m("“"+s+"” is…",TC,c,e))]},
+{n:"Specification",tip:["Specification = turn a general statement into a specific one.","Add who, what, where, how many, which.","Names, numbers, examples, sensory details."],it:[
+m("Which is more specific?",["She bought some things.","She bought three notebooks and a blue pen."],1,"Numbers + items."),
+m("Best specific example for “Technology made study easier”?",["Technology is everywhere.","Students can watch recorded lectures anytime on YouTube."],1,"Concrete."),
+a("spec","The food was good."),a("spec","He went to a place and saw some things."),
+a("spec","She had a nice day."),a("spec","The teacher gave us some work."),a("spec","There were many people at the market selling things.")]},
+{n:"Transition words",tip:["Addition: also, moreover, furthermore, in addition.","Contrast: however, but, although, on the other hand.","Cause/result: therefore, thus, as a result, consequently.","Example: for instance, for example.","Sequence: firstly, next, then, after that, finally."],it:[
+m("It rained all day. ___, the match went on.",["Therefore","However","Moreover"],1,"Contrast."),
+m("He studied hard. ___, he passed.",["As a result","Although","Instead"],0,"Result."),
+a("trans","Making tea is easy. [1] ___, boil water in a pot. [2] ___, add the tea leaves and let them simmer. [3] ___, pour in milk and sugar. [4] ___, strain it into a cup. [5] ___, it tastes best when hot.",5),
+a("trans","Social media has many benefits. [1] ___, it connects people across the world. [2] ___, students can share notes easily. [3] ___, it has drawbacks, and many users become addicted. [4] ___, it should be used wisely. [5] ___, you can set daily time limits.",5),
+a("trans","Exams can be stressful. [1] ___, students should plan their study time. [2] ___, they can revise a little every day. [3] ___, enough sleep helps memory. [4] ___, cramming the night before rarely works. [5] ___, a calm mind performs better.",5),
+a("trans","Dhaka faces serious traffic problems. [1] ___, thousands of new vehicles enter the roads daily. [2] ___, many roads are narrow. [3] ___, people lose hours in jams. [4] ___, the government should build more flyovers. [5] ___, citizens should use public transport.",5)]},
+{n:"Paraphrase",tip:["Keep meaning, change words AND structure.","Techniques: synonyms · word forms · active/passive · word order · changing syntax · splitting · merging · combining 2–3.","Max 3 words in a row from the source (key terms excepted).","Keep keywords. Don’t change the central idea. Paraphrase can be longer."],it:[
+a("para","The diagram below shows how bricks are manufactured for the building industry."),
+a("para","Training programs help to develop new skills."),
+a("para","Thomas Edison invented the electric light bulb."),
+a("para","Many people enjoy reading books in their free time."),
+a("para","Schools should provide lessons on the responsible use of the Internet and the need to adopt a healthy lifestyle."),
+a("para","Social media has emerged as an influential force in the modern world, transforming the way individuals communicate, exchange ideas, and access information. For students, it offers valuable opportunities for academic collaboration, knowledge sharing, and global connectivity. Despite these advantages, excessive reliance on social media often results in addiction, diminished productivity, and heightened risks to mental health. Consequently, it is essential to cultivate responsible and balanced use of these platforms in order to maximize their educational and social benefits."),
+a("para","Climate change is accelerating the melting of polar ice."),
+a("para","The company’s profits fell sharply last year."),
+a("para","Exercise reduces stress and improves the quality of sleep."),
+a("para","Online learning offers flexibility and access to a wide range of resources. However, it can reduce face-to-face interaction and make it harder for students to stay motivated. Therefore, learners need strong self-discipline to succeed.")]},
+{n:"Citation (APA 7)",tip:["In-text: parenthetical (Lee, 2016) · narrative Lee (2016) said…","Citation needed for quotes, summaries AND paraphrases.","Book: Author, F. (Year). *Title in sentence case.* Publisher.","Journal: Author, F., & Author, F. (Year). Article title sentence case. *Journal Title Case, Volume*(Issue), pages.","Newspaper: Author, F. (Year, Month Day). Article title. *Newspaper Name.*","Chapter: …Title. In F. Editor (Ed.), *Book title* (pp. 1–9). Publisher.","Reference list = alphabetical. Italic by hand → underline."],it:[
+m("Which is a narrative citation?",["Lee (2016) investigated tap water risks.","There are risks in tap water (Lee, 2016).","Lee-2016"],0,"Name is part of the sentence."),
+m("Reference list order?",["Random","Alphabetical by author’s last name","By page number"],1,"A to Z."),
+m("In a journal reference, what is italic?",["Article title","Journal title and volume number","Year"],1,"Journal title + volume."),
+m("Which article title is in correct APA sentence case?",["Crossing the Gender Chasm for Productive Field Engagement","Crossing the gender chasm for productive field engagement"],1,"Only first word + proper nouns."),
+a("ref","Author: Jeffrey Jensen Arnett\nYear: 2020\nBook title: Human Development: A Cultural Approach\nPublisher: Pearson","Arnett, J. J. (2020). *Human development: A cultural approach.* Pearson."),
+a("ref","Authors: Thomas E. Heinzen, Wind Goodfriend\nYear: 2021\nBook title: Social Psychology\nPublisher: Sage","Heinzen, T. E., & Goodfriend, W. (2021). *Social psychology.* Sage."),
+a("ref","JOURNAL · Author: Raghunandan Reddy\nYear: 2022\nArticle: Crossing the Gender Chasm for Productive Field Engagement\nJournal: The Qualitative Report\nVolume 27; Issue 12; Pages 2744-2760","Reddy, R. (2022). Crossing the gender chasm for productive field engagement. *The Qualitative Report, 27*(12), 2744–2760."),
+a("ref","JOURNAL · Authors: Maliha Khan and Asifa Sultana\nYear: 2022\nArticle: Teaching English to Young Learners in a Pandemic: A Bangladeshi Perspective\nJournal: BELTA Journal\nVolume 6; Issue 1; Pages 1-13","Khan, M., & Sultana, A. (2022). Teaching English to young learners in a pandemic: A Bangladeshi perspective. *BELTA Journal, 6*(1), 1–13."),
+a("ref","NEWSPAPER · Author: Md. Farooque Hossain\nDate: 19 December 2023\nArticle: Starlink Satellite Internet: A Game Changer for Bangladesh?\nNewspaper: The Daily Sun","Hossain, M. F. (2023, December 19). Starlink satellite internet: A game changer for Bangladesh? *The Daily Sun.*"),
+a("ref","BOOK · Author: Francis Fukuyama\nYear: 1992\nBook title: The End of History and the Last Man\nPublisher: Free Press","Fukuyama, F. (1992). *The end of history and the last man.* Free Press."),
+a("ref","BOOK · Authors: Abhijit V. Banerjee and Esther Duflo\nYear: 2012\nBook title: Poor Economics: A Radical Rethinking of the Way to Fight Global Poverty\nPublisher: Public Affairs","Banerjee, A. V., & Duflo, E. (2012). *Poor economics: A radical rethinking of the way to fight global poverty.* Public Affairs."),
+a("ref","NEWSPAPER · Author: Sejal Saraf\nDate: 28 July 2023\nArticle: Aiming for a Smoke-Free Bangladesh\nNewspaper: The Dhaka Tribune","Saraf, S. (2023, July 28). Aiming for a smoke-free Bangladesh. *The Dhaka Tribune.*"),
+a("ref","CHAPTER IN EDITED BOOK · Author: Refat Ara Jerin\nYear: 2023\nChapter: Pixar in Classrooms\nBook: Multifaceted Development: A Bangladesh Case Study\nEditor: Imtiaz A. Hussain\nPages: 73-84\nPublisher: Palgrave Macmillan","Jerin, R. A. (2023). Pixar in classrooms. In I. A. Hussain (Ed.), *Multifaceted development: A Bangladesh case study* (pp. 73–84). Palgrave Macmillan."),
+a("cite","Source: Koehler, 2016\nIdea: falsely balanced news coverage can distort how the public sees expert consensus.","Parenthetical: Falsely balanced news coverage can distort the public’s view of expert consensus (Koehler, 2016). Narrative: Koehler (2016) noted the dangers of falsely balanced news coverage."),
+a("cite","Source: Lee, 2016\nIdea: there are risks in drinking tap water.","Parenthetical: There are risks inherent in drinking tap water (Lee, 2016). Narrative: Lee (2016) investigated the risks inherent in drinking tap water."),
+a("cite","Source: Heinzen and Goodfriend, 2021 (book: Social Psychology)\nIdea: people’s behavior is shaped by the groups they belong to.","Parenthetical: People’s behavior is shaped by their groups (Heinzen & Goodfriend, 2021). Narrative: Heinzen and Goodfriend (2021) explained that group membership shapes behavior.")]}];
+const INS={para:"Paraphrase this. Change words AND structure, keep the meaning.",topic:"Write a good topic sentence for this paragraph.",spec:"Rewrite it to be specific (who, what, where, how many).",trans:"Type one transition word per blank, one per line (1: …).",ref:"Write the APA 7 reference. Use *stars* around italic parts.",cite:"Write BOTH an in-text parenthetical citation sentence AND a narrative one for this source."};
+const R={
+para:(t,s)=>`You are a kind but strict university writing teacher. Rate this paraphrase out of 10.\nRules: keep the exact meaning; change vocabulary AND sentence structure; no more than 3 consecutive words copied from the source (key terms may stay); keep keywords; no new opinions. Techniques: synonyms, word forms, active/passive, word order, changing syntax, splitting, merging, combination.\nSOURCE: ${t}\nSTUDENT: ${s}\nReply in short plain text: Score x/10 / Techniques used / Problems (quote copied words) / A better version / One tip.`,
+topic:(t,s)=>`Rate this student's topic sentence out of 10 for the paragraph below. A good one has a clear topic + controlling idea, covers ALL details, and is neither too broad nor too narrow.\nPARAGRAPH (topic sentence removed): ${t}\nSTUDENT'S TOPIC SENTENCE: ${s}\nReply short: Score x/10 / Label: Too broad, Too narrow or Perfect / Why / A stronger version.`,
+spec:(t,s)=>`Rate out of 10 how specific this rewrite is (names, numbers, places, concrete details) while keeping the meaning.\nORIGINAL: ${t}\nSTUDENT: ${s}\nReply short: Score x/10 / What is still vague / A more specific version.`,
+trans:(t,s)=>`A student filled numbered blanks in this paragraph with transition words. For each blank say if it fits (type: addition, contrast, cause/result, example, sequence), then give 2 better or alternative options. End with Score x/10.\nPARAGRAPH: ${t}\nSTUDENT'S WORDS: ${s}`,
+cite:(t,s)=>`Check the student's APA 7 in-text citations (one parenthetical like (Lee, 2016), one narrative like Lee (2016) said…). Two authors: & inside brackets, "and" in the sentence. Say what is right or wrong, rate out of 10, and give corrected versions.\nSOURCE: ${t}\nSTUDENT: ${s}`,
+ref:(t,s)=>`Check this student's APA 7th edition reference against the course book rules: Last name, initials; year in brackets; sentence case for article and BOOK titles (capital only for first word, after a colon, and proper nouns or nationalities); journal title in Title Case, italic with volume; (issue) not italic; pages with en dash; newspaper uses (Year, Month Day); *stars* mean italic. List every mistake clearly and give the corrected reference. End with Score x/10.\nINFO: ${t}\nSTUDENT: ${s}`};
+let ti=0,qi=0,sc=0,mc=0,done=false;
+const $=id=>document.getElementById(id),esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])),fmt=s=>esc(s).replace(/\*(.+?)\*/g,"<i>$1</i>");
+try{$("gk").value=localStorage.getItem("gk")||""}catch(e){}
+$("gk").onchange=()=>{try{localStorage.setItem("gk",$("gk").value.trim())}catch(e){}};
+const IC=["🔗","🎯","🔍","🧩","🔀","✍️","📚"];
+function chips(){$("chips").innerHTML=T.map((t,i)=>`<button class="chip ${i==ti?"on":""}" onclick="pick(${i})">${IC[i]} ${t.n}</button>`).join("")}
+function pick(i){ti=i;qi=0;sc=0;mc=T[i].it.filter(x=>x.k=="m").length;chips();$("tip").innerHTML=`<div class="card tip"><b>Quick tips</b><ul>${T[i].tip.map(x=>`<li>${fmt(x)}</li>`).join("")}</ul></div>`;show()}
+function show(){const t=T[ti],n=t.it.length;$("bar").innerHTML=`<div class="bar"><i style="width:${qi/n*100}%"></i></div>`;
+if(qi>=n){$("main").innerHTML=`<div class="card c"><div class="big">${mc&&sc/mc<.5?"📚":"🏆"}</div><h2>${mc?`MCQ score ${sc} / ${mc}`:"Done"}</h2><button class="btn" onclick="pick(ti)">Retry</button><button class="btn g" onclick="pick((ti+1)%T.length)">Next topic →</button>${T[ti].it.some(z=>z.k!="m")?`<button class="btn g" onclick="gen()">✨ 3 fresh ones from Gemini</button>`:""}<div class="out" id="gout"></div></div>`;return}
+const x=t.it[qi];done=false;
+if(x.k=="m"){$("main").innerHTML=`<div class="card"><div class="meta">${qi+1} of ${n} · MCQ</div><p class="q">${x.q}</p>${x.o.map((o,i)=>`<button class="opt" onclick="ans(${i},this)">${o}</button>`).join("")}<div id="fb"></div></div>`;return}
+$("main").innerHTML=`<div class="card"><div class="meta">${qi+1} of ${n} · ✨ Gemini check</div><p class="q">${INS[x.k]}</p><div class="src">${esc(x.t)}</div><textarea id="ans" rows="${x.k=="para"&&x.t.length>200?7:4}" placeholder="Your answer…"></textarea><button class="btn" onclick="chk()">Check with Gemini ✨</button>${typeof x.x=="string"?`<button class="btn g" onclick="$('mod').innerHTML='<b>Model:</b> '+fmt(T[ti].it[qi].x)">Show model</button>`:""}<button class="btn g" onclick="qi++;show()">${qi+1>=n?"Finish":"Skip / Next"}</button><div class="out" id="out"></div><div class="exp" id="mod"></div></div>`}
+function ans(i,el){if(done)return;done=true;const x=T[ti].it[qi],b=document.querySelectorAll(".opt");b[x.c].classList.add("ok");if(i===x.c)sc++;else el.classList.add("no");
+$("fb").innerHTML=`<div class="exp">${i===x.c?"✓ Correct. ":"✗ Not quite. "}${x.e}</div><button class="btn" onclick="qi++;show()">${qi+1>=T[ti].it.length?"See score":"Next"}</button>`}
+async function chk(){const k=$("gk").value.trim()||KEY,s=$("ans").value.trim(),o=$("out"),x=T[ti].it[qi];
+if(!k){o.textContent="Paste your Gemini key (🔑 at the top) first.";return}if(!s){o.textContent="Write your answer first.";return}
+o.textContent="Thinking…";
+try{const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,{method:"POST",headers:{"Content-Type":"application/json","X-goog-api-key":k},body:JSON.stringify({contents:[{parts:[{text:R[x.k](x.t,s)}]}]})});
+const d=await r.json();o.textContent=d.candidates?.[0]?.content?.parts?.map(p=>p.text).join("")||"Error: "+(d.error?.message||"no response")}catch(e){o.textContent="Network error: "+e.message+" (open this file in your browser, not the preview)"}}
+async function gen(){const k=$("gk").value.trim()||KEY,o=$("gout"),K=T[ti].it.find(z=>z.k!="m").k;o.textContent="Making new ones…";
+const F={topic:"paragraphs of 3 short sentences with NO topic sentence (strings)",spec:"short vague sentences (strings)",trans:"short paragraphs with 5 blanks written like [1] ___ up to [5] ___ (strings)",para:"academic sentences or short paragraphs (strings)",ref:'objects {"t":"raw info lines: BOOK/JOURNAL/NEWSPAPER, authors, year or date, titles in Title Case, publisher or journal/volume/issue/pages","x":"the correct APA 7 reference, *stars* for italics, sentence case for article and book titles"}',cite:'objects {"t":"author(s), year and a short idea from the source","x":"Parenthetical: ... Narrative: ..."}'}[K];
+try{const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,{method:"POST",headers:{"Content-Type":"application/json","X-goog-api-key":k},body:JSON.stringify({contents:[{parts:[{text:`Make 3 new practice items for a university English writing class on "${T[ti].n}". Return ONLY a JSON array of 3 ${F}. No markdown.`}]}]})});
+const d=await r.json(),txt=(d.candidates?.[0]?.content?.parts?.map(p=>p.text).join("")||"").replace(/```json|```/g,"").trim(),arr=JSON.parse(txt);
+arr.forEach(i=>T[ti].it.push(typeof i=="string"?a(K,i):a(K,i.t,i.x)));show()}catch(e){o.textContent="Couldn’t make new ones: "+e.message}}
+pick(0);
+</script></body></html>
